@@ -1,10 +1,11 @@
+import os
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes
 
 from database import add_user, add_score, get_score
 from quiz import quiz_data
 
-TOKEN = os.getenv("8772209818:AAFfuUv67ib3Pu-QnaZPHHJeNq6nrLme440")
+TOKEN = os.getenv("BOT_TOKEN")
 
 # Start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -19,9 +20,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Quiz
 async def send_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    buttons = []
-    for item in quiz_data["options"]:
-        buttons.append([InlineKeyboardButton(item, callback_data=item)])
+    context.user_data["answer"] = quiz_data["answer"]
+
+    buttons = [
+        [InlineKeyboardButton(opt, callback_data=opt)]
+        for opt in quiz_data["options"]
+    ]
 
     await update.message.reply_text(
         quiz_data["question"],
@@ -33,7 +37,9 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    if query.data == quiz_data["answer"]:
+    correct = context.user_data.get("answer")
+
+    if query.data == correct:
         add_score(query.from_user.id)
         await query.edit_message_text("✅ Correct!")
     else:
@@ -62,14 +68,19 @@ async def message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("Send your O/L question.")
 
-# Admin command
+# Admin
 async def announce(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    admin_id = 123456789  # replace with your telegram id
+    admin_id = 123456789
+
     if update.effective_user.id != admin_id:
         return
 
+    if not context.args:
+        await update.message.reply_text("Usage: /announce message")
+        return
+
     msg = " ".join(context.args)
-    await update.message.reply_text("📢 Announcement saved:\n" + msg)
+    await update.message.reply_text("📢 Announcement:\n" + msg)
 
 app = ApplicationBuilder().token(TOKEN).build()
 
