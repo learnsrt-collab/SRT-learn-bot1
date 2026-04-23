@@ -5,7 +5,7 @@ from database import add_user, add_score, get_score
 from quiz import quiz_data
 
 import os
-TOKEN = os.getenv("BOT_TOKEN")
+TOKEN = os.getenv("8502156429:AAHgrZX1jLlKyYtYswZADTtZRjuk5Pi7z80")
 
 # Start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
