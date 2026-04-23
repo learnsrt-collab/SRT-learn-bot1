@@ -4,7 +4,6 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, Cal
 from database import add_user, add_score, get_score
 from quiz import quiz_data
 
-import os
 TOKEN = os.getenv("8772209818:AAFfuUv67ib3Pu-QnaZPHHJeNq6nrLme440")
 
 # Start
