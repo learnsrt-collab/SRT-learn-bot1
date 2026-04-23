@@ -4,7 +4,8 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, Cal
 from database import add_user, add_score, get_score
 from quiz import quiz_data
 
-TOKEN = "8502156429:AAFUYWw6VAiJEzmfKdn7LCUrc6eoGAMrq9w"
+import os
+TOKEN = os.getenv("BOT_TOKEN")
 
 # Start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
