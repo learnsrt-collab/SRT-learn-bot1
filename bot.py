@@ -79,5 +79,8 @@ app.add_handler(CommandHandler("announce", announce))
 app.add_handler(CallbackQueryHandler(button_click))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, message))
 
+if not TOKEN:
+    raise ValueError("BOT_TOKEN not set")
+
 print("Bot Running...")
 app.run_polling()
